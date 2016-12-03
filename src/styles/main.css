@@ -1,0 +1,72 @@
+body {
+    background: #fff;
+}
+
+p {
+  margin-bottom: 15px;
+}
+
+.panel-group + .add-item,
+.list-group + .add-item {
+  margin-top: -15px;
+  margin-bottom: 20px;
+}
+
+.panel-title a {
+  cursor: pointer;
+}
+
+.input-header {
+  margin-top: 0;
+  padding: 10px;
+}
+
+.form-title {
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+.form-header {
+  font-size: 14px;
+  line-height: 1.42857143;
+  display: inline-block;
+  max-width: 100%;
+  margin-top: 0;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.set-form .form-group {
+  margin: 0;
+}
+
+.set-form .row-label,
+.set-form .remove-set {
+  padding-top: 7px;
+}
+
+.remove-exercise {
+  text-align: right;
+  margin-bottom: 0;
+}
+
+.set-form .row-label {
+  display: block;
+  margin-bottom: 0;
+  text-align: right;
+}
+.col-collapse-left {
+  padding-left: 0;
+}
+.col-collapse-right {
+  padding-right: 0;
+}
+
+.navbar {
+  margin-bottom: 0;
+}
+
+#main {
+  padding-top: 40px;
+  padding-bottom: 40px;
+}

@@ -1,0 +1,237 @@
+import React, { Component } from 'react';
+import { Button, PanelGroup, Panel } from 'react-bootstrap';
+import moment from 'moment';
+
+import FieldGroup from './FieldGroup';
+import ExerciseForm from './ExerciseForm';
+
+class WorkoutForm extends Component {
+
+  constructor(props) {
+    super(props);
+
+    var { date, exercises, activeExercise } = this.props;
+
+    // form input state
+    this.state = { date, exercises, activeExercise };
+
+    this.handleDateChange = this.handleDateChange.bind(this);
+    this.handleAddExerciseClick = this.handleAddExerciseClick.bind(this);
+    this.handleExerciseSelect = this.handleExerciseSelect.bind(this);
+    this.handleFormSubmit = this.handleFormSubmit.bind(this);
+  }
+
+  componentDidMount() {
+    this.firstField.focus();
+  }
+
+  addExercise() {
+    var newExercise = {
+      name: '',
+      sets: [],
+      notes: ''
+    };
+
+    this.setState({
+      exercises: [...this.state.exercises, newExercise],
+      activeExercise: this.state.exercises.length
+    });
+  }
+
+  removeExercise(exerciseId) {
+    return () => {
+      const exercises = this.state.exercises;
+
+      this.setState({
+        exercises: [
+          ...exercises.slice(0, exerciseId),
+          ...exercises.slice(exerciseId + 1)
+        ],
+        activeExercise: this.state.activeExercise === exerciseId ? -1 : exerciseId
+      })
+    }
+  } 
+
+  addSet(exerciseId) {
+    return () => {
+      var newSet = {
+        weight: '',
+        reps: ''
+      };
+
+      this.setState({
+        exercises: this.state.exercises.map(function(exercise, index) {
+          if (index !== exerciseId) {
+            return exercise;
+          }
+
+          return {
+            ...exercise,
+            sets: [...exercise.sets, newSet]
+          }
+        })
+      })
+    }
+  }
+
+  removeSet(exerciseId) {
+    return (setId) => {
+      return () => {
+        this.setState({
+          exercises: this.state.exercises.map(function(exercise, index) {
+            if (index !== exerciseId) {
+              return exercise;
+            }
+
+            return {
+              ...exercise,
+              sets: [
+                ...exercise.sets.slice(0, setId), 
+                ...exercise.sets.slice(setId + 1)
+              ]
+            }
+          })
+        })
+      }
+    }
+  }
+
+  handleDateChange(e) {
+    this.setState({
+      date: e.target.value
+    });
+  }
+
+  handleAddExerciseClick(e) {
+    e.preventDefault();
+
+    this.addExercise();
+  }
+
+  handleExerciseSelect(exerciseId) {
+    if (exerciseId === this.state.activeExercise) {
+      this.setState({
+        activeExercise: -1
+      })
+    } else {
+      this.setState({
+        activeExercise: exerciseId
+      })
+    }
+  } 
+
+  handleExerciseInputChange(exerciseId) {
+    return (inputName, value) => {
+      this.setState({
+        exercises: this.state.exercises.map((exercise, index) => {
+          if (index !== exerciseId) {
+            return exercise
+          }
+
+          return {
+            ...exercise,
+            [inputName]: value
+          }
+        })
+      })
+    }
+  }
+
+  handleSetInputChange(exerciseId) {
+    return (setId) => {
+      return (inputName, value) => {
+        this.setState({
+          exercises: this.state.exercises.map((exercise, index) => {
+            if (index !== exerciseId) {
+              return exercise
+            }
+
+            return {
+              ...exercise,
+              sets: exercise.sets.map((set, index) => {
+                if (index !== setId) {
+                  return set
+                }
+
+                return {
+                  ...set,
+                  [inputName]: value
+                }
+              })
+            }
+          })
+        })
+      }
+    }
+  }
+
+  handleFormSubmit(e) {
+    e.preventDefault();
+
+    this.props.addWorkout({
+      date: this.state.date,
+      exercises: this.state.exercises
+    });
+
+    this.setState({
+      date: moment().format('YYYY-MM-DD'),
+      exercises: [],
+      activeExercise: -1
+    });
+  }
+
+  render() {
+    return (
+      <form className="workout-form" onSubmit={this.handleFormSubmit}>
+        <FieldGroup
+          id="date"
+          name="date"
+          type="date"
+          label="Date"
+          value={this.state.date}
+          onChange={this.handleDateChange}
+          placeholder="mm/dd/yyyy"
+          ref={(input) => { this.firstField = input}}
+        />
+
+        <div className="exercises">
+          <h2 className="form-header">Exercises</h2>
+          {this.state.exercises.length > 0 &&
+            <PanelGroup activeKey={this.state.activeExercise} onSelect={this.handleExerciseSelect} accordion>
+              {this.state.exercises.map((exercise, i) => (
+                <Panel header={exercise.name || `Exercise ${i+1}`} eventKey={i} key={`exercise-${i}`}>
+                  <ExerciseForm 
+                    id={i}
+                    name={exercise.name}
+                    sets={exercise.sets}
+                    notes={exercise.notes}
+                    onInputChange={this.handleExerciseInputChange(i)}
+                    onSetInputChange={this.handleSetInputChange(i)}
+                    addSet={this.addSet(i)}
+                    removeExercise={this.removeExercise(i)}
+                    removeSet={this.removeSet(i)}
+                  />
+                </Panel>
+              ))}
+            </PanelGroup>
+          }
+          <p className="add-item">
+            <a href="#" onClick={this.handleAddExerciseClick}>
+              Add exercise
+            </a>
+          </p>
+        </div>
+
+        <Button type="submit" className="btn-primary">Log Workout</Button>
+      </form>
+    )
+  }
+}
+
+WorkoutForm.defaultProps = {
+  date: moment().format('YYYY-MM-DD'),
+  exercises: [],
+  activeExercise: -1
+};
+
+export default WorkoutForm;
