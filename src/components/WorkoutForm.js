@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, PanelGroup, Panel } from 'react-bootstrap';
+import { ButtonToolbar, Button, PanelGroup, Panel } from 'react-bootstrap';
 import moment from 'moment';
 
 import FieldGroup from './FieldGroup';
@@ -10,19 +10,34 @@ class WorkoutForm extends Component {
   constructor(props) {
     super(props);
 
-    var { date, exercises, activeExercise } = this.props;
+    var { date, exercises } = this.props;
 
     // form input state
-    this.state = { date, exercises, activeExercise };
+    this.state = { 
+      date, 
+      exercises, 
+      activeExercise: -1 
+    };
 
     this.handleDateChange = this.handleDateChange.bind(this);
     this.handleAddExerciseClick = this.handleAddExerciseClick.bind(this);
     this.handleExerciseSelect = this.handleExerciseSelect.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
+    this.handleDeleteWorkoutClick = this.handleDeleteWorkoutClick.bind(this);
   }
 
   componentDidMount() {
     this.firstField.focus();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    var { date, exercises } = nextProps;
+
+    this.setState({
+      date,
+      exercises,
+      activeExercise: -1
+    })
   }
 
   addExercise() {
@@ -168,19 +183,39 @@ class WorkoutForm extends Component {
   handleFormSubmit(e) {
     e.preventDefault();
 
-    this.props.addWorkout({
-      date: this.state.date,
-      exercises: this.state.exercises
-    });
+    if (this.props.editing === -1) {
+      this.props.addWorkout({
+        date: this.state.date,
+        exercises: this.state.exercises
+      });
+    } else {
+      this.props.updateWorkout({
+        id: this.props.editing,
+        date: this.state.date,
+        exercises: this.state.exercises
+      });
+    }
 
     this.setState({
-      date: moment().format('YYYY-MM-DD'),
+      date: '',
       exercises: [],
       activeExercise: -1
     });
   }
 
+  handleDeleteWorkoutClick(e) {
+    e.preventDefault();
+
+    if (this.props.editing === -1) {
+      return;
+    }
+
+    this.props.deleteWorkout(this.props.editing);
+  }
+
   render() {
+    const { editing } = this.props;
+
     return (
       <form className="workout-form" onSubmit={this.handleFormSubmit}>
         <FieldGroup
@@ -193,7 +228,6 @@ class WorkoutForm extends Component {
           placeholder="mm/dd/yyyy"
           ref={(input) => { this.firstField = input}}
         />
-
         <div className="exercises">
           <h2 className="form-header">Exercises</h2>
           {this.state.exercises.length > 0 &&
@@ -221,8 +255,10 @@ class WorkoutForm extends Component {
             </a>
           </p>
         </div>
-
-        <Button type="submit" className="btn-primary">Log Workout</Button>
+        <ButtonToolbar>
+          <Button type="submit" className="btn-primary">{editing === -1 ? "Log new" : "Update"} workout</Button>
+          {editing > -1 && <Button bsStyle="danger" onClick={this.handleDeleteWorkoutClick}>Delete workout</Button>}
+        </ButtonToolbar>
       </form>
     )
   }

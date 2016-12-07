@@ -10,15 +10,54 @@ class App extends Component {
     super(props);
 
     this.state = {
-      workouts: []
+      workouts: [],
+      activeWorkout: false
     }
 
     this.addWorkout = this.addWorkout.bind(this);
+    this.updateWorkout = this.updateWorkout.bind(this);
+    this.deleteWorkout = this.deleteWorkout.bind(this);
+    this.setActiveWorkout = this.setActiveWorkout.bind(this);
   }
 
-  addWorkout(workout) {
+  addWorkout(newWorkout) {
     this.setState({
-      workouts: [...this.state.workouts, workout]
+      workouts: [...this.state.workouts, { 
+        id: this.state.workouts.length,
+        ...newWorkout
+      }],
+      activeWorkout: false
+    })
+  }
+
+  updateWorkout(updatedWorkout) {
+    this.setState({
+      workouts: this.state.workouts.map((workout) => {
+        if (workout.id !== updatedWorkout.id) {
+          return workout;
+        }
+
+        return Object.assign({}, workout, updatedWorkout);
+      }),
+      activeWorkout: false
+    })
+  }
+
+  deleteWorkout(workoutId) {
+    this.setState({
+      workouts: [
+        ...this.state.workouts.slice(0, workoutId),
+        ...this.state.workouts.slice(workoutId + 1)
+      ],
+      activeWorkout: false
+    });
+  }
+
+  setActiveWorkout(workoutId) {
+    let workout = this.state.workouts[workoutId] || false;
+
+    this.setState({
+      activeWorkout: workout
     })
   }
 
@@ -38,11 +77,22 @@ class App extends Component {
         <Grid id="main">
           <Row>
             <Col md={4}>
-              <WorkoutList workouts={this.state.workouts} />
+              <WorkoutList 
+                workouts={this.state.workouts}
+                activeWorkout={this.state.activeWorkout}
+                onWorkoutClick={this.setActiveWorkout}
+              />
             </Col>
             <Col md={8}>
               <Panel>
-                <WorkoutForm addWorkout={this.addWorkout} />
+                <WorkoutForm 
+                  date={this.state.activeWorkout ? this.state.activeWorkout.date : undefined}
+                  exercises={this.state.activeWorkout ? this.state.activeWorkout.exercises : undefined}
+                  editing={this.state.activeWorkout ? this.state.activeWorkout.id : -1 }
+                  addWorkout={this.addWorkout} 
+                  updateWorkout={this.updateWorkout}
+                  deleteWorkout={this.deleteWorkout}
+                />
               </Panel>
             </Col>
           </Row>
