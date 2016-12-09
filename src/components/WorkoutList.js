@@ -5,14 +5,13 @@ import moment from 'moment';
 class WorkoutList extends Component {
   render() {
     const { workouts, activeWorkout, onWorkoutClick } = this.props;
-    const activeId = activeWorkout ? activeWorkout.id : -1;
 
     return (
       <ListGroup>
         {workouts.length > 0 && (
           <ListGroupItem
             header="New workout"
-            active={!activeWorkout}
+            active={activeWorkout.id === -1}
             className="new-workout-btn"
             onClick={(e) => {
               onWorkoutClick(-1);
@@ -25,7 +24,7 @@ class WorkoutList extends Component {
           <ListGroupItem 
             key={`workout-${workout.id}`}
             header={moment(workout.date).format("ddd., MMM. D YYYY")}
-            active={workout.id === activeId}
+            active={workout.id === activeWorkout.id}
             onClick={(e) => {
               onWorkoutClick(workout.id);
               e.preventDefault();

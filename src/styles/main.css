@@ -6,6 +6,12 @@ p {
   margin-bottom: 15px;
 }
 
+.page-title {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
 .panel-group + .add-item,
 .list-group + .add-item {
   margin-top: -15px;
@@ -71,6 +77,10 @@ p {
   padding-bottom: 40px;
 }
 
-.new-workout-btn {
-  background-color: #f6f6f6;
+button.new-workout-btn .list-group-item-heading {
+  color: #337ab7;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 1.42857143;
+  margin: 0;
 }

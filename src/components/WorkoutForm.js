@@ -24,6 +24,7 @@ class WorkoutForm extends Component {
     this.handleExerciseSelect = this.handleExerciseSelect.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
     this.handleDeleteWorkoutClick = this.handleDeleteWorkoutClick.bind(this);
+    this.handleRepeatWorkoutClick = this.handleRepeatWorkoutClick.bind(this);
   }
 
   componentDidMount() {
@@ -203,6 +204,12 @@ class WorkoutForm extends Component {
     });
   }
 
+  handleRepeatWorkoutClick(e) {
+    e.preventDefault();
+
+    this.props.setActiveWorkout(this.props.editing, true)
+  }
+
   handleDeleteWorkoutClick(e) {
     e.preventDefault();
 
@@ -257,6 +264,7 @@ class WorkoutForm extends Component {
         </div>
         <ButtonToolbar>
           <Button type="submit" className="btn-primary">{editing === -1 ? "Log new" : "Update"} workout</Button>
+          {editing > -1 && <Button bsStyle="success" onClick={this.handleRepeatWorkoutClick}>Repeat workout</Button>}
           {editing > -1 && <Button bsStyle="danger" onClick={this.handleDeleteWorkoutClick}>Delete workout</Button>}
         </ButtonToolbar>
       </form>
@@ -267,7 +275,7 @@ class WorkoutForm extends Component {
 WorkoutForm.defaultProps = {
   date: moment().format('YYYY-MM-DD'),
   exercises: [],
-  activeExercise: -1
+  editing: -1
 };
 
 export default WorkoutForm;

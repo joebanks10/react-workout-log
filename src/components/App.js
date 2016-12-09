@@ -9,10 +9,16 @@ class App extends Component {
   constructor(props) {
     super(props);
 
+    this.defaultActiveWorkout = {
+      id: -1,
+      date: undefined,
+      exercises: []
+    };
+
     this.state = {
       workouts: [],
-      activeWorkout: false
-    }
+      activeWorkout: {...this.defaultActiveWorkout}
+    };
 
     this.addWorkout = this.addWorkout.bind(this);
     this.updateWorkout = this.updateWorkout.bind(this);
@@ -26,7 +32,7 @@ class App extends Component {
         id: this.state.workouts.reduce((maxId, workout) => Math.max(workout.id, maxId), -1) + 1,
         ...newWorkout
       }],
-      activeWorkout: false
+      activeWorkout: {...this.defaultActiveWorkout}
     })
   }
 
@@ -39,23 +45,28 @@ class App extends Component {
 
         return Object.assign({}, workout, updatedWorkout);
       }),
-      activeWorkout: false
+      activeWorkout: {...this.defaultActiveWorkout}
     })
   }
 
   deleteWorkout(workoutId) {
     this.setState({
       workouts: this.state.workouts.filter(workout => workout.id !== workoutId),
-      activeWorkout: false
+      activeWorkout: {...this.defaultActiveWorkout}
     });
   }
 
-  setActiveWorkout(workoutId) {
-    let workout = this.state.workouts.reduce((default_value, workout) => 
-      workout.id === workoutId ? workout : default_value, false);
+  setActiveWorkout(workoutId, clone = false) {
+    var workout = this.state.workouts.reduce((default_value, workout) => 
+      workout.id === workoutId ? workout : default_value, 
+      {...this.defaultActiveWorkout}
+    );
 
     this.setState({
-      activeWorkout: workout
+      activeWorkout: {
+        ...workout,
+        id: clone ? -1 : workout.id
+      }
     })
   }
 
@@ -83,13 +94,15 @@ class App extends Component {
             </Col>
             <Col md={8}>
               <Panel>
+                {<h1 className="page-title">{this.state.activeWorkout.id > -1 ? "Edit workout" : "New workout"}</h1>}
                 <WorkoutForm 
-                  date={this.state.activeWorkout ? this.state.activeWorkout.date : undefined}
-                  exercises={this.state.activeWorkout ? this.state.activeWorkout.exercises : undefined}
-                  editing={this.state.activeWorkout ? this.state.activeWorkout.id : -1 }
+                  date={this.state.activeWorkout.date}
+                  exercises={this.state.activeWorkout.exercises}
+                  editing={this.state.activeWorkout.id}
                   addWorkout={this.addWorkout} 
                   updateWorkout={this.updateWorkout}
                   deleteWorkout={this.deleteWorkout}
+                  setActiveWorkout={this.setActiveWorkout}
                 />
               </Panel>
             </Col>
