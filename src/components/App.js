@@ -23,7 +23,7 @@ class App extends Component {
   addWorkout(newWorkout) {
     this.setState({
       workouts: [...this.state.workouts, { 
-        id: this.state.workouts.length,
+        id: this.state.workouts.reduce((maxId, workout) => Math.max(workout.id, maxId), -1) + 1,
         ...newWorkout
       }],
       activeWorkout: false
@@ -45,16 +45,14 @@ class App extends Component {
 
   deleteWorkout(workoutId) {
     this.setState({
-      workouts: [
-        ...this.state.workouts.slice(0, workoutId),
-        ...this.state.workouts.slice(workoutId + 1)
-      ],
+      workouts: this.state.workouts.filter(workout => workout.id !== workoutId),
       activeWorkout: false
     });
   }
 
   setActiveWorkout(workoutId) {
-    let workout = this.state.workouts[workoutId] || false;
+    let workout = this.state.workouts.reduce((default_value, workout) => 
+      workout.id === workoutId ? workout : default_value, false);
 
     this.setState({
       activeWorkout: workout
