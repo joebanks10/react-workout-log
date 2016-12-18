@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { ButtonToolbar, Button, PanelGroup, Panel } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
 import moment from 'moment';
 
 import FieldGroup from './FieldGroup';
@@ -264,7 +265,11 @@ class WorkoutForm extends Component {
         </div>
         <ButtonToolbar>
           <Button type="submit" className="btn-primary">{editing === -1 ? "Log new" : "Update"} workout</Button>
-          {editing > -1 && <Button bsStyle="success" onClick={this.handleRepeatWorkoutClick}>Repeat workout</Button>}
+          {editing > -1 && (
+            <LinkContainer to={{ pathname: "/workouts/new", query: { clone: editing } }}>
+              <Button bsStyle="success">Repeat workout</Button>
+            </LinkContainer>
+          )}
           {editing > -1 && <Button bsStyle="danger" onClick={this.handleDeleteWorkoutClick}>Delete workout</Button>}
         </ButtonToolbar>
       </form>
