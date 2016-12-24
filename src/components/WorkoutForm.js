@@ -17,7 +17,7 @@ class WorkoutForm extends Component {
     this.state = { 
       date, 
       exercises, 
-      activeExercise: -1 
+      activeExercise: -1
     };
 
     this.handleDateChange = this.handleDateChange.bind(this);
@@ -25,7 +25,6 @@ class WorkoutForm extends Component {
     this.handleExerciseSelect = this.handleExerciseSelect.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
     this.handleDeleteWorkoutClick = this.handleDeleteWorkoutClick.bind(this);
-    this.handleRepeatWorkoutClick = this.handleRepeatWorkoutClick.bind(this);
   }
 
   componentDidMount() {
@@ -82,9 +81,11 @@ class WorkoutForm extends Component {
             return exercise;
           }
 
+          var sets = exercise.sets || [];
+
           return {
             ...exercise,
-            sets: [...exercise.sets, newSet]
+            sets: [...sets, newSet]
           }
         })
       })
@@ -185,7 +186,7 @@ class WorkoutForm extends Component {
   handleFormSubmit(e) {
     e.preventDefault();
 
-    if (this.props.editing === -1) {
+    if (this.props.editing === "new") {
       this.props.addWorkout({
         date: this.state.date,
         exercises: this.state.exercises
@@ -205,16 +206,10 @@ class WorkoutForm extends Component {
     });
   }
 
-  handleRepeatWorkoutClick(e) {
-    e.preventDefault();
-
-    this.props.setActiveWorkout(this.props.editing, true)
-  }
-
   handleDeleteWorkoutClick(e) {
     e.preventDefault();
 
-    if (this.props.editing === -1) {
+    if (this.props.editing === "new") {
       return;
     }
 
@@ -264,13 +259,13 @@ class WorkoutForm extends Component {
           </p>
         </div>
         <ButtonToolbar>
-          <Button type="submit" className="btn-primary">{editing === -1 ? "Log new" : "Update"} workout</Button>
-          {editing > -1 && (
+          <Button type="submit" className="btn-primary">{editing === "new" ? "Log new" : "Update"} workout</Button>
+          {editing !== "new" && (
             <LinkContainer to={{ pathname: "/workouts/new", query: { clone: editing } }}>
               <Button bsStyle="success">Repeat workout</Button>
             </LinkContainer>
           )}
-          {editing > -1 && <Button bsStyle="danger" onClick={this.handleDeleteWorkoutClick}>Delete workout</Button>}
+          {editing !== "new" && <Button bsStyle="danger" onClick={this.handleDeleteWorkoutClick}>Delete workout</Button>}
         </ButtonToolbar>
       </form>
     )
@@ -280,7 +275,7 @@ class WorkoutForm extends Component {
 WorkoutForm.defaultProps = {
   date: moment().format('YYYY-MM-DD'),
   exercises: [],
-  editing: -1
+  editing: "new"
 };
 
 export default WorkoutForm;

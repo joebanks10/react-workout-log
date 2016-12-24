@@ -91,4 +91,10 @@ class ExerciseForm extends Component {
   }
 }
 
+ExerciseForm.defaultProps = {
+  name: "",
+  sets: [],
+  notes: ""
+};
+
 export default ExerciseForm

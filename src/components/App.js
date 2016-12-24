@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Grid, Row, Col, Navbar, Panel } from 'react-bootstrap';
 import { hashHistory } from 'react-router';
-
+import moment from 'moment';
+import Database from '../utilities/database';
 import WorkoutForm from './WorkoutForm';
 import WorkoutList from './WorkoutList';
 
@@ -10,7 +11,7 @@ class App extends Component {
     super(props);
 
     this.defaultActiveWorkout = {
-      id: -1,
+      id: "new",
       date: undefined,
       exercises: []
     };
@@ -20,31 +21,34 @@ class App extends Component {
       activeWorkout: {...this.defaultActiveWorkout}
     };
 
+    // set up Firebase
+    this.db = new Database();
+
+    // set up active workout reference
     this.activeWorkout = {...this.defaultActiveWorkout};
+
+    this.onAddWorkout = this.onAddWorkout.bind(this);
+    this.onUpdateWorkout = this.onUpdateWorkout.bind(this);
+    this.onDeleteWorkout = this.onDeleteWorkout.bind(this);
 
     this.addWorkout = this.addWorkout.bind(this);
     this.updateWorkout = this.updateWorkout.bind(this);
     this.deleteWorkout = this.deleteWorkout.bind(this);
-    this.setActiveWorkout = this.setActiveWorkout.bind(this);
   }
 
-  // componentDidUpdate(prevProps, prevState) {
-  //   if (this.props.params.workoutId === prevProps.params.workoutId) {
-  //     return;
-  //   }
+  componentDidMount() {
+    this.db.workouts.on('child_added', (data) => {
+      this.addWorkout(data.val());
+    });
 
-  //   var workoutId;
-  //   var clone = (typeof this.props.location.query.clone === "undefined") ? 
-  //     false : this.props.location.query.clone;
+    this.db.workouts.on('child_changed', (data) => {
+      this.updateWorkout(data.val());
+    });
 
-  //   if (this.props.params.workoutId === "new") {
-  //     workoutId = clone ? clone : -1;
-  //   } else {
-  //     workoutId = this.props.params.workoutId;
-  //   }
-
-  //   this.setActiveWorkout(workoutId, clone);
-  // }
+    this.db.workouts.on('child_removed', (data) => {
+      this.deleteWorkout(data.val().id);
+    });
+  }
 
   componentWillUpdate(nextProps, nextState) {
     if (typeof nextProps.params.workoutId === "undefined") {
@@ -61,9 +65,9 @@ class App extends Component {
       }
       
       clone = nextProps.location.query.clone;
-      workoutId = +clone;
+      workoutId = clone;
     } else {
-      workoutId = +workoutId;
+      workoutId = workoutId;
     }
 
     this.activeWorkout = nextState.workouts.reduce((prev, workout) => {
@@ -71,17 +75,30 @@ class App extends Component {
     }, {...this.defaultActiveWorkout});
 
     if (clone) {
-      this.activeWorkout.id = -1;
+      this.activeWorkout.id = "new";
     }
   }
 
-  addWorkout(newWorkout) {
-    var id = this.state.workouts.reduce((maxId, workout) => Math.max(workout.id, maxId), -1) + 1;
+  onAddWorkout({ id, date = false, exercises = [] }) {
+    date = date || moment().format('YYYY-MM-DD');
 
+    this.db.addWorkout({ id, date, exercises });
+  }
+
+  onUpdateWorkout(updatedWorkout) {
+    this.db.updateWorkout(updatedWorkout.id, updatedWorkout);
+  }
+
+  onDeleteWorkout(id) {
+    this.db.deleteWorkout(id);
+  }
+
+  addWorkout({ id, date = this.defaultDate, exercises = [] }) {
     this.setState({
       workouts: [...this.state.workouts, { 
-        ...newWorkout,
-        id
+        id,
+        date,
+        exercises
       }]
     });
 
@@ -100,30 +117,15 @@ class App extends Component {
     });
   }
 
-  deleteWorkout(workoutId) {
+  deleteWorkout(id) {
     this.setState({
-      workouts: this.state.workouts.filter(workout => workout.id !== workoutId)
+      workouts: this.state.workouts.filter(workout => workout.id !== id)
     });
 
     hashHistory.push('/workouts/new');
   }
 
-  setActiveWorkout(workoutId, clone = false) {
-    var workout = this.state.workouts.reduce((prev, workout) => {
-      return workout.id === +workoutId ? workout : prev;
-    }, {...this.defaultActiveWorkout});
-
-    this.setState({
-      activeWorkout: {
-        ...workout,
-        id: clone ? -1 : workout.id
-      }
-    });
-  }
-
   render() {
-    console.log("Hello");
-
     return (
       <div>
         <Navbar inverse id="header">
@@ -146,15 +148,14 @@ class App extends Component {
             </Col>
             <Col md={8}>
               <Panel>
-                {<h1 className="page-title">{this.activeWorkout.id > -1 ? "Edit workout" : "New workout"}</h1>}
+                {<h1 className="page-title">{this.activeWorkout.id !== "new" ? "Edit workout" : "New workout"}</h1>}
                 <WorkoutForm 
                   date={this.activeWorkout.date}
                   exercises={this.activeWorkout.exercises}
                   editing={this.activeWorkout.id}
-                  addWorkout={this.addWorkout} 
-                  updateWorkout={this.updateWorkout}
-                  deleteWorkout={this.deleteWorkout}
-                  setActiveWorkout={this.setActiveWorkout}
+                  addWorkout={this.onAddWorkout} 
+                  updateWorkout={this.onUpdateWorkout}
+                  deleteWorkout={this.onDeleteWorkout}
                 />
               </Panel>
             </Col>
