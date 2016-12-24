@@ -38,11 +38,21 @@ class App extends Component {
 
   componentDidMount() {
     this.db.workouts.on('child_added', (data) => {
-      this.addWorkout(data.val());
+      var workout = data.val();
+
+      this.addWorkout({
+        ...workout,
+        date: moment.unix(workout.date).format('YYYY-MM-DD') // convert timestamp
+      });
     });
 
     this.db.workouts.on('child_changed', (data) => {
-      this.updateWorkout(data.val());
+      var workout = data.val();
+
+      this.updateWorkout({
+        ...workout,
+        date: moment.unix(workout.date).format('YYYY-MM-DD') // convert timestamp
+      });
     });
 
     this.db.workouts.on('child_removed', (data) => {
@@ -93,7 +103,9 @@ class App extends Component {
     this.db.deleteWorkout(id);
   }
 
-  addWorkout({ id, date = this.defaultDate, exercises = [] }) {
+  addWorkout({ id, date = false, exercises = [] }) {
+    date = date || moment().format('YYYY-MM-DD');
+
     this.setState({
       workouts: [...this.state.workouts, { 
         id,

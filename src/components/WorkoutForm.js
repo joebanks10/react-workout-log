@@ -198,12 +198,6 @@ class WorkoutForm extends Component {
         exercises: this.state.exercises
       });
     }
-
-    this.setState({
-      date: '',
-      exercises: [],
-      activeExercise: -1
-    });
   }
 
   handleDeleteWorkoutClick(e) {

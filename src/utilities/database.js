@@ -14,14 +14,23 @@ class Database {
 
     this.app = Firebase.initializeApp(config);
     this.db = Firebase.database();
-    this.workouts = this.db.ref('workouts/');
+    this.workouts = this.getWorkouts().orderByChild('date');
+  }
+
+  getWorkouts(id) {
+    if (typeof id === "undefined") {
+      return this.db.ref('workouts/');
+    }
+
+    return this.db.ref('workouts/' + id);
   }
 
   addWorkout({ date = false, exercises = [] }) {
-    var ref = this.workouts.push(),
+    var ref = this.db.ref('workouts/').push(),
         id = ref.key;
 
-    date = date || moment().format('YYYY-MM-DD');
+    // convert to unix timestamp
+    date = moment(date).unix() || moment().unix();
 
     ref.set({ 
       id,
@@ -31,8 +40,11 @@ class Database {
   }
 
   updateWorkout(id, data) {
+    var date = moment(data.date).unix();
+
     this.db.ref('workouts/' + id).update({
-      ...data
+      ...data,
+      date
     });
   }
 
