@@ -1,5 +1,6 @@
 import Firebase from 'firebase';
 import moment from 'moment';
+import shortid from 'shortid';
 
 class Database {
 	constructor() {
@@ -25,31 +26,33 @@ class Database {
     return this.db.ref('workouts/' + id);
   }
 
-  addWorkout({ date = false, exercises = [] }) {
-    var ref = this.db.ref('workouts/').push(),
-        id = ref.key;
-
+  addWorkout({ id, date = false, exercises = [] }) {
     // convert to unix timestamp
     date = moment(date).unix() || moment().unix();
+    id = shortid.generate();
 
-    ref.set({ 
+    this.db.ref('workouts/').push().set({ 
       id,
       date,
       exercises
     });
   }
 
-  updateWorkout(id, data) {
+  updateWorkout(refId, data) {
+    if (typeof refId === 'undefined') {
+      return;
+    }
+
     var date = moment(data.date).unix();
 
-    this.db.ref('workouts/' + id).update({
+    this.db.ref('workouts/' + refId).update({
       ...data,
       date
     });
   }
 
-  deleteWorkout(id) {
-    this.db.ref('workouts/' + id).remove();
+  deleteWorkout(refId) {
+    this.db.ref('workouts/' + refId).remove();
   }
 }
 

@@ -5,6 +5,6 @@ import '!style!css!bootstrap/dist/css/bootstrap.css';
 import '!style!css!bootstrap/dist/css/bootstrap-theme.css';
 import '!style!css!./styles/main.css';
 
-import Root from './components/Root';
+import App from './components/App';
 
-ReactDOM.render(<Root />, document.getElementById('app'));
+ReactDOM.render(<App />, document.getElementById('app'));

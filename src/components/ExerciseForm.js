@@ -8,7 +8,7 @@ class ExerciseForm extends Component {
   constructor(props) {
     super(props);
 
-    this.inputPrefix = `exercise[${this.props.id}]`;
+    this.inputPrefix = `exercise[${this.props.exerciseId}]`;
 
     this.handleAddSetClick = this.handleAddSetClick.bind(this);
     this.handleRemoveExerciseClick = this.handleRemoveExerciseClick.bind(this);
@@ -29,17 +29,17 @@ class ExerciseForm extends Component {
   handleAddSetClick(e) {
     e.preventDefault();
 
-    this.props.addSet();
+    this.props.onAddSet();
   }
 
   handleRemoveExerciseClick(e) {
     e.preventDefault();
 
-    this.props.removeExercise();
+    this.props.onRemoveExercise();
   }
 
   render() {
-    const {name, sets, notes, onInputChange, onSetInputChange, removeSet} = this.props;
+    const {name, sets, notes, onInputChange, getOnSetInputChange, getOnRemoveSet} = this.props;
 
     return (
       <div className="exercise-form">
@@ -58,14 +58,14 @@ class ExerciseForm extends Component {
         {sets.length > 0 &&
           <ListGroup className="sets">
             {sets.map((set, i) => (
-              <ListGroupItem key={`set-${i}`}>
+              <ListGroupItem key={set.id}>
                 <SetForm
                   order={i+1}
                   weight={set.weight}
                   reps={set.reps}
                   getInputName={this.getSetInputName(i)}
-                  onInputChange={onSetInputChange(i)}
-                  removeSet={removeSet(i)}
+                  onInputChange={getOnSetInputChange(set.id)}
+                  removeSet={getOnRemoveSet(set.id)}
                 />
               </ListGroupItem>
             ))}

@@ -20,7 +20,7 @@ class WorkoutList extends Component {
           </LinkContainer>
         )}
         {workouts.length > 0 ? workouts.map((workout, index) => (
-          <LinkContainer to={`/workouts/${workout.id}`} key={`workout-${workout.id}`}>
+          <LinkContainer to={`/workouts/${workout.id}`} key={workout.id}>
             <ListGroupItem 
               header={moment(workout.date).format("ddd., MMM. D YYYY")}
               active={workout.id === activeWorkout.id}
