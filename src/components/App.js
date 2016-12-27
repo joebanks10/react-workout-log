@@ -1,13 +1,13 @@
 import React from 'react';
 import { Router, Route, IndexRoute, Redirect, hashHistory } from 'react-router';
-import Database from '../utilities/database';
+import Storage from '../utils/Storage';
 
 import BaseLayout from './BaseLayout';
 import Home from './Home';
 import WorkoutsContainer from '../containers/WorkoutsContainer';
 
 function App() {
-  var db = new Database();
+  var db = new Storage();
 
   return (
     <Router history={hashHistory}>

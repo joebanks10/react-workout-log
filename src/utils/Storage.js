@@ -2,7 +2,7 @@ import Firebase from 'firebase';
 import moment from 'moment';
 import shortid from 'shortid';
 
-class Database {
+class Storage {
 	constructor() {
     // set up Firebase
     var config = {
@@ -56,4 +56,4 @@ class Database {
   }
 }
 
-export default Database;
+export default Storage;
