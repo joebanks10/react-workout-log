@@ -6,21 +6,21 @@ class SetForm extends Component {
   constructor(props) {
     super(props);
 
-    this.handleRemoveSetClick = this.handleRemoveSetClick.bind(this);
+    this.onRemoveSetClick = this.onRemoveSetClick.bind(this);
   }
 
   componentDidMount() {
     this.firstField.focus();
   }
 
-  handleRemoveSetClick(e) {
+  onRemoveSetClick(e) {
     e.preventDefault();
 
-    this.props.removeSet();
+    this.props.onRemoveSet();
   }
 
   render() {
-    const {order, weight, reps, getInputName, onInputChange} = this.props;
+    const { order, weight, reps, getInputName, onInputChange } = this.props;
 
     return (
       <div className="set-form">
@@ -60,7 +60,11 @@ class SetForm extends Component {
           </Col>
           <Col className="col-xs-2">
             <div className="remove-set">
-              <a href="#remove-set-{order}" onClick={this.handleRemoveSetClick} className="text-danger">
+              <a 
+                href="#remove-set-{order}" 
+                onClick={this.onRemoveSetClick} 
+                className="text-danger"
+              >
                 Remove
               </a>
             </div>

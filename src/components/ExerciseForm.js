@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { ListGroup, ListGroupItem } from 'react-bootstrap';
-import FieldGroup from './FieldGroup';
 
+import FieldGroup from './FieldGroup';
 import SetForm from './SetForm';
 
 class ExerciseForm extends Component {
@@ -10,12 +10,24 @@ class ExerciseForm extends Component {
 
     this.inputPrefix = `exercise[${this.props.exerciseId}]`;
 
-    this.handleAddSetClick = this.handleAddSetClick.bind(this);
-    this.handleRemoveExerciseClick = this.handleRemoveExerciseClick.bind(this);
+    this.onAddSetClick = this.onAddSetClick.bind(this);
+    this.onRemoveExerciseClick = this.onRemoveExerciseClick.bind(this);
   }
 
   componentDidMount() {
     this.firstField.focus();
+  }
+
+  onAddSetClick(e) {
+    e.preventDefault();
+
+    this.props.onAddSet();
+  }
+
+  onRemoveExerciseClick(e) {
+    e.preventDefault();
+
+    this.props.onRemoveExercise();
   }
 
   getInputName(name) {
@@ -26,20 +38,8 @@ class ExerciseForm extends Component {
     return name => `${this.inputPrefix}[set][${setId}][${name}]`
   }
 
-  handleAddSetClick(e) {
-    e.preventDefault();
-
-    this.props.onAddSet();
-  }
-
-  handleRemoveExerciseClick(e) {
-    e.preventDefault();
-
-    this.props.onRemoveExercise();
-  }
-
   render() {
-    const {name, sets, notes, onInputChange, getOnSetInputChange, getOnRemoveSet} = this.props;
+    const { name, sets, notes, onInputChange, getOnSetInputChange, getOnRemoveSet } = this.props;
 
     return (
       <div className="exercise-form">
@@ -63,16 +63,16 @@ class ExerciseForm extends Component {
                   order={i+1}
                   weight={set.weight}
                   reps={set.reps}
-                  getInputName={this.getSetInputName(i)}
                   onInputChange={getOnSetInputChange(set.id)}
-                  removeSet={getOnRemoveSet(set.id)}
+                  onRemoveSet={getOnRemoveSet(set.id)}
+                  getInputName={this.getSetInputName(set.id)}
                 />
               </ListGroupItem>
             ))}
           </ListGroup>
         }
         <p className="add-item">
-          <a href="#" onClick={this.handleAddSetClick}>Add set</a>
+          <a href="#" onClick={this.onAddSetClick}>Add set</a>
         </p>
 
         <FieldGroup
@@ -84,7 +84,7 @@ class ExerciseForm extends Component {
           onChange={(e) => onInputChange("notes", e.target.value)}
         />
         <p className="remove-item remove-exercise">
-          <a href="#remove-exercise" onClick={this.handleRemoveExerciseClick} className="text-danger">Remove exercise</a>
+          <a href="#remove-exercise" onClick={this.onRemoveExerciseClick} className="text-danger">Remove exercise</a>
         </p>
       </div>
     )
