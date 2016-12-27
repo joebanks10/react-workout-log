@@ -82,7 +82,7 @@ class WorkoutsContainer extends Component {
         ref,
         date,
         exercises
-      }]
+      }].sort(this.compareDate)
     });
 
     hashHistory.push('/workouts/' + id);
@@ -96,7 +96,7 @@ class WorkoutsContainer extends Component {
         }
 
         return Object.assign({}, workout, updatedWorkout);
-      })
+      }).sort(this.compareDate)
     });
   }
 
@@ -106,6 +106,13 @@ class WorkoutsContainer extends Component {
     });
 
     hashHistory.push('/workouts/new');
+  }
+
+  compareDate(workout1, workout2) {
+    var date1 = moment(workout1.date).unix();
+    var date2 = moment(workout2.date).unix();
+
+    return date1 - date2; // if 0 or negative, date1 goes first
   }
 
   getDefaultWorkout() {
