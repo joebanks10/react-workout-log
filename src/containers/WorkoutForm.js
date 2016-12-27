@@ -62,6 +62,8 @@ class WorkoutForm extends Component {
   }
 
   onAddExerciseClick(e) {
+    e.preventDefault();
+    
     var newExercise = {
       id: shortid.generate(),
       name: '',
@@ -73,8 +75,6 @@ class WorkoutForm extends Component {
       exercises: [...this.state.exercises, newExercise],
       activeExercise: newExercise.id
     });
-
-    e.preventDefault();
   }
 
   onExerciseSelect(exerciseId) {
@@ -247,7 +247,7 @@ class WorkoutForm extends Component {
               {this.state.exercises.map((exercise, index) => (
                 <Panel 
                   header={exercise.name || `Exercise ${index + 1}`} 
-                  eventKey={index} 
+                  eventKey={exercise.id}
                   key={exercise.id}
                 >
                   <ExerciseForm 
