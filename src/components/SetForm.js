@@ -1,6 +1,21 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Grid, Row, Col } from 'react-bootstrap';
+
 import FieldGroup from './FieldGroup';
+
+const propTypes = {
+  order: PropTypes.number.isRequired,
+  weight: PropTypes.string,
+  reps: PropTypes.string,
+  onInputChange: PropTypes.func.isRequired,
+  onRemoveSet: PropTypes.func.isRequired,
+  getInputName: PropTypes.func.isRequired
+};
+
+const defaultProps = {
+  weight: '',
+  reps: ''
+};
 
 class SetForm extends Component {
   constructor(props) {
@@ -20,7 +35,7 @@ class SetForm extends Component {
   }
 
   render() {
-    const { order, weight, reps, getInputName, onInputChange } = this.props;
+    const { order, weight, reps, onInputChange, getInputName } = this.props;
 
     return (
       <div className="set-form">
@@ -74,5 +89,8 @@ class SetForm extends Component {
     )
   }
 }
+
+SetForm.propTypes = propTypes;
+SetForm.defaultProps = defaultProps;
 
 export default SetForm;
