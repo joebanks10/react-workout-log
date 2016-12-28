@@ -1,8 +1,26 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { ListGroup, ListGroupItem } from 'react-bootstrap';
 
 import FieldGroup from './FieldGroup';
 import SetForm from './SetForm';
+
+const propTypes = {
+  exerciseId: PropTypes.string.isRequired,
+  name: PropTypes.string,
+  sets: PropTypes.array,
+  notes: PropTypes.string,
+  onInputChange: PropTypes.func.isRequired,
+  onRemoveExercise: PropTypes.func.isRequired,
+  onAddSet: PropTypes.func.isRequired,
+  getOnRemoveSet: PropTypes.func.isRequired,
+  getOnSetInputChange: PropTypes.func.isRequired
+};
+
+const defaultProps = {
+  name: '',
+  sets: [],
+  notes: ''
+};
 
 class ExerciseForm extends Component {
   constructor(props) {
@@ -35,11 +53,11 @@ class ExerciseForm extends Component {
   }
 
   getSetInputName(setId) {
-    return name => `${this.inputPrefix}[set][${setId}][${name}]`
+    return name => `${this.inputPrefix}[set][${setId}][${name}]`;
   }
 
   render() {
-    const { name, sets, notes, onInputChange, getOnSetInputChange, getOnRemoveSet } = this.props;
+    const { exerciseId, name, sets, notes, onInputChange, getOnSetInputChange, getOnRemoveSet } = this.props;
 
     return (
       <div className="exercise-form">
@@ -57,14 +75,14 @@ class ExerciseForm extends Component {
         <h3 className="form-header">Sets</h3>
         {sets.length > 0 &&
           <ListGroup className="sets">
-            {sets.map((set, i) => (
+            {sets.map((set, index) => (
               <ListGroupItem key={set.id}>
                 <SetForm
-                  order={i+1}
+                  order={index+1}
                   weight={set.weight}
                   reps={set.reps}
-                  onInputChange={getOnSetInputChange(set.id)}
-                  onRemoveSet={getOnRemoveSet(set.id)}
+                  onInputChange={getOnSetInputChange(exerciseId, set.id)}
+                  onRemoveSet={getOnRemoveSet(exerciseId, set.id)}
                   getInputName={this.getSetInputName(set.id)}
                 />
               </ListGroupItem>
@@ -91,10 +109,7 @@ class ExerciseForm extends Component {
   }
 }
 
-ExerciseForm.defaultProps = {
-  name: "",
-  sets: [],
-  notes: ""
-};
+ExerciseForm.propTypes = propTypes;
+ExerciseForm.defaultProps = defaultProps;
 
 export default ExerciseForm

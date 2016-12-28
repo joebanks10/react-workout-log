@@ -10,17 +10,16 @@ import ExerciseForm from '../components/ExerciseForm';
 const propTypes = {
   workoutId: PropTypes.string,
   date: PropTypes.string,
-  exercises: PropTypes.array
+  exercises: PropTypes.array,
+  onAddWorkout: PropTypes.func,
+  onUpdateWorkout: PropTypes.func,
+  onDeleteWorkout: PropTypes.func
 };
 
 const defaultProps = {
   workoutId: 'new',
   date: moment().format('YYYY-MM-DD'),
-  exercises: [],
-  onAddWorkout: function() {},
-  onUpdateWorkout: function() {},
-  onRepeatWorkout: function() {},
-  onDeleteWorkout: function() {}
+  exercises: []
 };
 
 class WorkoutForm extends Component {
@@ -39,6 +38,8 @@ class WorkoutForm extends Component {
     this.onExerciseSelect = this.onExerciseSelect.bind(this);
     this.onFormSubmit = this.onFormSubmit.bind(this);
     this.onDeleteWorkoutClick = this.onDeleteWorkoutClick.bind(this);
+    this.getOnSetInputChange = this.getOnSetInputChange.bind(this);
+    this.getOnRemoveSet = this.getOnRemoveSet.bind(this);
   }
 
   componentDidMount() {
@@ -169,55 +170,51 @@ class WorkoutForm extends Component {
     };
   }
 
-  getGetOnRemoveSet(exerciseId) {
-    return (setId) => {
-      return () => {
-        this.setState({
-          exercises: this.state.exercises.map(function(exercise, index) {
-            if (exercise.id !== exerciseId) {
-              return exercise;
-            }
+  getOnRemoveSet(exerciseId, setId) {
+    return () => {
+      this.setState({
+        exercises: this.state.exercises.map(function(exercise, index) {
+          if (exercise.id !== exerciseId) {
+            return exercise;
+          }
 
-            const setIndex = exercise.sets.findIndex(set => set.id === setId);
+          const setIndex = exercise.sets.findIndex(set => set.id === setId);
 
-            return {
-              ...exercise,
-              sets: [
-                ...exercise.sets.slice(0, setIndex), 
-                ...exercise.sets.slice(setIndex + 1)
-              ]
-            }
-          })
+          return {
+            ...exercise,
+            sets: [
+              ...exercise.sets.slice(0, setIndex), 
+              ...exercise.sets.slice(setIndex + 1)
+            ]
+          }
         })
-      }
+      })
     }
   }
 
-  getGetOnSetInputChange(exerciseId) {
-    return (setId) => {
-      return (inputName, value) => {
-        this.setState({
-          exercises: this.state.exercises.map((exercise, index) => {
-            if (exercise.id !== exerciseId) {
-              return exercise
-            }
+  getOnSetInputChange(exerciseId, setId) {
+    return (inputName, value) => {
+      this.setState({
+        exercises: this.state.exercises.map((exercise, index) => {
+          if (exercise.id !== exerciseId) {
+            return exercise
+          }
 
-            return {
-              ...exercise,
-              sets: exercise.sets.map((set, index) => {
-                if (set.id !== setId) {
-                  return set
-                }
+          return {
+            ...exercise,
+            sets: exercise.sets.map((set, index) => {
+              if (set.id !== setId) {
+                return set
+              }
 
-                return {
-                  ...set,
-                  [inputName]: value
-                }
-              })
-            }
-          })
+              return {
+                ...set,
+                [inputName]: value
+              }
+            })
+          }
         })
-      }
+      })
     }
   }
 
@@ -258,8 +255,8 @@ class WorkoutForm extends Component {
                     onInputChange={this.getOnExerciseInputChange(exercise.id)}
                     onRemoveExercise={this.getOnRemoveExercise(exercise.id)}
                     onAddSet={this.getOnAddSet(exercise.id)}
-                    getOnRemoveSet={this.getGetOnRemoveSet(exercise.id)}
-                    getOnSetInputChange={this.getGetOnSetInputChange(exercise.id)}
+                    getOnRemoveSet={this.getOnRemoveSet}
+                    getOnSetInputChange={this.getOnSetInputChange}
                   />
                 </Panel>
               ))}
