@@ -5,7 +5,7 @@ import WorkoutForm from '../containers/WorkoutForm';
 import WorkoutList from './WorkoutList';
 
 function Workouts(props) {
-  const { workouts, activeWorkout, onAddWorkout, onUpdateWorkout, onDeleteWorkout } = props;
+  const { workouts, activeWorkout, isNewWorkout, onAddWorkout, onUpdateWorkout, onDeleteWorkout } = props;
 
   return (
     <Row>
@@ -17,9 +17,10 @@ function Workouts(props) {
       </Col>
       <Col md={8}>
         <Panel>
-          {<h1 className="page-title">{activeWorkout.id !== "new" ? "Edit workout" : "New workout"}</h1>}
+          {<h1 className="page-title">{isNewWorkout ? "New workout" : "Edit workout"}</h1>}
           <WorkoutForm 
             workoutId={activeWorkout.id}
+            isNewWorkout={isNewWorkout}
             date={activeWorkout.date}
             exercises={activeWorkout.exercises}
             addWorkout={onAddWorkout}

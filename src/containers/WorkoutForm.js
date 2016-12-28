@@ -93,7 +93,7 @@ class WorkoutForm extends Component {
   onFormSubmit(e) {
     e.preventDefault();
 
-    if (this.props.workoutId === 'new') {
+    if (this.props.isNewWorkout) {
       this.props.addWorkout({
         date: this.state.date,
         exercises: this.state.exercises
@@ -219,7 +219,7 @@ class WorkoutForm extends Component {
   }
 
   render() {
-    const { workoutId } = this.props;
+    const { workoutId, isNewWorkout } = this.props;
 
     return (
       <form className="workout-form" onSubmit={this.onFormSubmit}>
@@ -270,14 +270,14 @@ class WorkoutForm extends Component {
         </div>
         <ButtonToolbar>
           <Button type="submit" className="btn-primary">
-            {workoutId === "new" ? "Log new" : "Update"} workout
+            {isNewWorkout ? "Log new" : "Update"} workout
           </Button>
-          {workoutId !== "new" && (
+          {!isNewWorkout && (
             <LinkContainer to={{ pathname: "/workouts/new", query: { clone: workoutId } }}>
               <Button bsStyle="success">Repeat workout</Button>
             </LinkContainer>
           )}
-          {workoutId !== "new" && (
+          {!isNewWorkout && (
             <Button bsStyle="danger" onClick={this.onDeleteWorkoutClick}>
               Delete workout
             </Button>

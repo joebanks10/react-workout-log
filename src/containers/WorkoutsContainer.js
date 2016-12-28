@@ -49,14 +49,18 @@ class WorkoutsContainer extends Component {
     });
   }
 
-  onAddWorkout({ id, date = false, exercises = [] }) {
+  onAddWorkout({ date = false, exercises = [] }) {
     date = date || moment().format('YYYY-MM-DD');
 
-    this.db.addWorkout({ id, date, exercises });
+    this.db.addWorkout({ date, exercises });
   }
 
   onUpdateWorkout({ id, date = false, exercises = [] }) {
     const workout = this.state.workouts.find(workout => id === workout.id);
+
+    if (typeof workout === "undefined") {
+      this.onAddWorkout({ date, exercise });
+    }
 
     date = date || moment().format('YYYY-MM-DD');
 
@@ -161,6 +165,7 @@ class WorkoutsContainer extends Component {
       <Workouts 
         workouts={this.state.workouts}
         activeWorkout={activeWorkout}
+        isNewWorkout={activeWorkout.id === 'new'}
         onAddWorkout={this.onAddWorkout}
         onUpdateWorkout={this.onUpdateWorkout}
         onDeleteWorkout={this.onDeleteWorkout}
