@@ -10,10 +10,7 @@ function Workouts(props) {
   return (
     <Row>
       <Col md={4}>
-        <WorkoutList 
-          workouts={workouts}
-          activeWorkout={activeWorkout}
-        />
+        <WorkoutList workouts={workouts} />
       </Col>
       <Col md={8}>
         <Panel>

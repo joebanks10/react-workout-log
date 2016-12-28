@@ -5,7 +5,7 @@ import moment from 'moment';
 
 class WorkoutList extends Component {
   render() {
-    const { workouts, activeWorkout } = this.props;
+    const { workouts } = this.props;
 
     return (
       <ListGroup>
@@ -13,7 +13,6 @@ class WorkoutList extends Component {
           <LinkContainer to="/workouts/new">
             <ListGroupItem
               header="New workout"
-              active={activeWorkout.id === -1}
               className="new-workout-btn"
             >
             </ListGroupItem>
@@ -23,7 +22,6 @@ class WorkoutList extends Component {
           <LinkContainer to={`/workouts/${workout.id}`} key={workout.id}>
             <ListGroupItem 
               header={moment(workout.date).format("ddd., MMM. D YYYY")}
-              active={workout.id === activeWorkout.id}
             >
               <span className="details">
                 {workout.exercises.map(exercise => exercise.name).join(', ') || "You didn't log any exercises."}

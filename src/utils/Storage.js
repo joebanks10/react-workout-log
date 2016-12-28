@@ -27,9 +27,10 @@ class Storage {
   }
 
   addWorkout({ date = false, exercises = [] }) {
+    const id = shortid.generate();
+
     // convert to unix timestamp
     date = moment(date).unix() || moment().unix();
-    id = shortid.generate();
 
     this.db.ref('workouts/').push().set({ 
       id,

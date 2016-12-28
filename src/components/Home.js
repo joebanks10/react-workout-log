@@ -6,13 +6,13 @@ function Home() {
   return (
     <Row>
       <Col xs={12}>
-        <h1>Track your gainz</h1>
+        <h1>Track your gainz.</h1>
         <p>Some compelling BS about how my app makes the world a better place will go here.</p>
         <ButtonToolbar>
-          <LinkContainer to="/sign-up">
+          <LinkContainer to="/signup">
             <Button bsStyle="primary">Sign Up</Button>
           </LinkContainer>
-          <LinkContainer to="/log-in">
+          <LinkContainer to="/login">
             <Button>Log In</Button>
           </LinkContainer>
         </ButtonToolbar>
