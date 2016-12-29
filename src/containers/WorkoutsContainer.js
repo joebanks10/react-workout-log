@@ -9,10 +9,10 @@ class WorkoutsContainer extends Component {
     super(props);
 
     this.state = {
-      workouts: []
+      workouts: [],
+      isInitialized: false
     };
 
-    // set up Firebase
     this.db = this.props.route.db;
 
     this.onAddWorkout = this.onAddWorkout.bind(this);
@@ -25,7 +25,32 @@ class WorkoutsContainer extends Component {
   }
 
   componentDidMount() {
-    this.db.workouts.on('child_added', (data) => {
+    var workoutsRef = this.db.getWorkouts();
+    var initWorkouts = [];
+
+    workoutsRef.once('value', (list) => {
+      list.forEach((data) => {
+        var workout = data.val();
+
+        initWorkouts.push({
+          id: workout.id,
+          ref: data.key,
+          date: moment.unix(workout.date).format('YYYY-MM-DD'), // convert timestamp
+          exercises: workout.exercises || []
+        });
+      });
+
+      this.setState({
+        workouts: initWorkouts,
+        isInitialized: true
+      });
+    });
+
+    workoutsRef.on('child_added', (data) => {
+      if (!this.state.isInitialized) {
+        return;
+      }
+
       var workout = data.val();
 
       this.addWorkout({
@@ -35,7 +60,7 @@ class WorkoutsContainer extends Component {
       });
     });
 
-    this.db.workouts.on('child_changed', (data) => {
+    workoutsRef.on('child_changed', (data) => {
       var workout = data.val();
 
       this.updateWorkout({
@@ -44,7 +69,7 @@ class WorkoutsContainer extends Component {
       });
     });
 
-    this.db.workouts.on('child_removed', (data) => {
+    workoutsRef.on('child_removed', (data) => {
       this.deleteWorkout(data.val().id);
     });
   }
@@ -81,12 +106,7 @@ class WorkoutsContainer extends Component {
     date = date || moment().format('YYYY-MM-DD');
 
     this.setState({
-      workouts: [...this.state.workouts, { 
-        id,
-        ref,
-        date,
-        exercises
-      }].sort(this.compareDate)
+      workouts: [...this.state.workouts, { id, ref, date, exercises }].sort(this.compareDate)
     });
 
     hashHistory.push('/workouts/' + id);

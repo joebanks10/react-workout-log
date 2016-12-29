@@ -15,12 +15,12 @@ class Storage {
 
     this.app = Firebase.initializeApp(config);
     this.db = Firebase.database();
-    this.workouts = this.getWorkouts().orderByChild('date');
+    this.workouts = this.db.ref('workouts/');
   }
 
   getWorkouts(id) {
     if (typeof id === "undefined") {
-      return this.db.ref('workouts/');
+      return this.workouts;
     }
 
     return this.db.ref('workouts/' + id);
