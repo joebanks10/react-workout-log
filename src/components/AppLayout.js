@@ -17,7 +17,7 @@ class AppLayout extends Component {
   }
 
   render() {
-    const { title } = this.props;
+    const { title, isLoggedIn } = this.props;
 
     return (
       <div>
@@ -30,13 +30,10 @@ class AppLayout extends Component {
               <Navbar.Toggle />
             </Navbar.Header>
             <Navbar.Collapse>
-              <Nav>
-                <LinkContainer to="/workouts">
-                  <NavItem eventKey={1} href="#">Workouts</NavItem>
-                </LinkContainer>
-              </Nav>
               <Nav pullRight>
-                <NavItem eventKey={1} href="#" onClick={this.onLogOutClick}>Log out</NavItem>
+                {isLoggedIn && (
+                  <NavItem eventKey={1} href="#" onClick={this.onLogOutClick}>Log out</NavItem>
+                )}
               </Nav>
             </Navbar.Collapse>
           </Grid>

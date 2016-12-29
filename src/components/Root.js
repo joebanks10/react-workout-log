@@ -19,21 +19,30 @@ class Root extends Component {
   requireLogin(nextState, replace, next) {
     var user = firebase.auth().currentUser;
 
-    if (user) {
-      next();
-    } else {
+    if (!user) {
       replace('/');
-      next();
     }
+
+    next();
+  }
+
+  redirectLoggedInUser(nextState, replace, next) {
+    var user = firebase.auth().currentUser;
+
+    if (user) {
+      replace('/workouts');
+    }
+
+    next();
   }
 
   render() {
     return (
       <Router history={hashHistory}>
         <Route path="/" component={App} title="Workout Log">
-          <IndexRoute component={Home} />
-          <Route path="signup" component={SignUpForm} />
-          <Route path="login" component={LoginForm} />
+          <IndexRoute component={Home} onEnter={this.redirectLoggedInUser} />
+          <Route path="signup" component={SignUpForm} onEnter={this.redirectLoggedInUser} />
+          <Route path="login" component={LoginForm} onEnter={this.redirectLoggedInUser} />
           <Route 
             path="workouts/:workoutId" 
             component={WorkoutsContainer} 
