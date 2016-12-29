@@ -10,7 +10,8 @@ class SignUpForm extends Component {
     this.state = {
       email: '',
       password: '',
-      message: ''
+      message: '',
+      isLoading: false
     };
 
     this.onEmailChange = this.onEmailChange.bind(this);
@@ -36,12 +37,14 @@ class SignUpForm extends Component {
     var email = this.state.email;
     var password = this.state.password;
 
-    firebase.auth().createUserWithEmailAndPassword(email, password).catch((error) => {
-      var errorCode = error.code;
-      var errorMessage = error.message;
+    this.setState({
+      isLoading: true
+    });
 
+    firebase.auth().createUserWithEmailAndPassword(email, password).catch((error) => {
       this.setState({
-        message: errorMessage
+        message: error.message,
+        isLoading: false
       });
     });
   }
@@ -55,7 +58,10 @@ class SignUpForm extends Component {
             <Alert bsStyle="danger">{this.state.message}</Alert>
           )}
           <Panel>
-            <form className="signup-form" onSubmit={this.onSubmit}>
+            <form 
+              className="signup-form" 
+              onSubmit={!this.state.isLoading ? this.onSubmit : null}
+            >
               <FieldGroup
                 id="email"
                 name="email"
@@ -73,8 +79,12 @@ class SignUpForm extends Component {
                 value={this.state.password}
                 onChange={this.onPasswordChange}
               />
-              <Button type="submit" className="btn-primary">
-                Create account
+              <Button 
+                type="submit" 
+                disabled={this.state.isLoading}
+                className="btn-primary"
+              >
+                {!this.state.isLoading ? 'Create account' : 'Loading...'}
               </Button>
             </form>
           </Panel>
