@@ -3,7 +3,7 @@ import { Row, Col, Button, Panel, Alert } from 'react-bootstrap';
 import FieldGroup from '../components/FieldGroup';
 import firebase from 'firebase';
 
-class SignUpForm extends Component {
+class LoginForm extends Component {
   constructor(props) {
     super(props);
 
@@ -36,7 +36,7 @@ class SignUpForm extends Component {
     var email = this.state.email;
     var password = this.state.password;
 
-    firebase.auth().createUserWithEmailAndPassword(email, password).catch((error) => {
+    firebase.auth().signInWithEmailAndPassword(email, password).catch((error) => {
       var errorCode = error.code;
       var errorMessage = error.message;
 
@@ -50,12 +50,12 @@ class SignUpForm extends Component {
     return (
       <Row>
         <Col xs={4}>
-          <h1>Sign up! It's free.</h1>
+          <h1>Login Form</h1>
           {this.state.message && (
             <Alert bsStyle="danger">{this.state.message}</Alert>
           )}
           <Panel>
-            <form className="signup-form" onSubmit={this.onSubmit}>
+            <form className="login-form" onSubmit={this.onSubmit}>
               <FieldGroup
                 id="email"
                 name="email"
@@ -74,7 +74,7 @@ class SignUpForm extends Component {
                 onChange={this.onPasswordChange}
               />
               <Button type="submit" className="btn-primary">
-                Create account
+                Log in
               </Button>
             </form>
           </Panel>
@@ -84,4 +84,4 @@ class SignUpForm extends Component {
   }
 }
 
-export default SignUpForm;
+export default LoginForm;
