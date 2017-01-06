@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import moment from 'moment';
+import firebase from 'firebase';
 import { hashHistory } from 'react-router';
 
 import Workouts from '../components/Workouts';
@@ -180,6 +181,7 @@ class WorkoutsContainer extends Component {
 
   render() {
     const activeWorkout = this.getActiveWorkout();
+    const user = firebase.auth().currentUser;
 
     return (
       <Workouts 
