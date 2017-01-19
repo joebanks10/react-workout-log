@@ -62167,7 +62167,7 @@
 	      _react2.default.createElement(
 	        'p',
 	        null,
-	        'Some compelling BS about how my app makes the world a better place will go here.'
+	        'Some compelling marketing pitch about how my app makes the world a better place will go here.'
 	      ),
 	      _react2.default.createElement(
 	        _reactBootstrap.ButtonToolbar,
