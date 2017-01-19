@@ -1,10 +1,10 @@
-import Firebase from 'firebase';
+import firebase from 'firebase';
 import moment from 'moment';
 import shortid from 'shortid';
 
 class Storage {
 	constructor() {
-    // set up Firebase
+    // set up firebase
     var config = {
       apiKey: "AIzaSyC02BDarkzp-jMztlBI32cQOlEZvVluv7M",
       authDomain: "workout-log-a0c07.firebaseapp.com",
@@ -13,14 +13,20 @@ class Storage {
       messagingSenderId: "141837028377"
     };
 
-    this.app = Firebase.initializeApp(config);
-    this.db = Firebase.database();
-    this.workouts = this.db.ref('workouts/');
+    this.app = firebase.initializeApp(config);
+    this.db = firebase.database();
   }
 
   getWorkouts(id) {
+    const user = firebase.auth().currentUser;
+    const uid = user && user.uid;
+
+    if (!uid) {
+      return null;
+    }
+
     if (typeof id === "undefined") {
-      return this.workouts;
+      return this.db.ref('workouts/').orderByChild('uid').equalTo(user.uid);
     }
 
     return this.db.ref('workouts/' + id);
@@ -28,12 +34,19 @@ class Storage {
 
   addWorkout({ date = false, exercises = [] }) {
     const id = shortid.generate();
+    const user = firebase.auth().currentUser;
+    const uid = user && user.uid;
+
+    if (!uid) {
+      return;
+    }
 
     // convert to unix timestamp
     date = moment(date).unix() || moment().unix();
 
     this.db.ref('workouts/').push().set({ 
       id,
+      uid,
       date,
       exercises
     });

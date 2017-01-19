@@ -28,6 +28,7 @@ class WorkoutsContainer extends Component {
   componentDidMount() {
     var workoutsRef = this.db.getWorkouts();
     var initWorkouts = [];
+    const user = firebase.auth().currentUser;
 
     workoutsRef.once('value', (list) => {
       list.forEach((data) => {
@@ -181,7 +182,6 @@ class WorkoutsContainer extends Component {
 
   render() {
     const activeWorkout = this.getActiveWorkout();
-    const user = firebase.auth().currentUser;
 
     return (
       <Workouts 
