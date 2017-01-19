@@ -7,7 +7,7 @@ function Home() {
     <Row>
       <Col xs={12}>
         <h1>Track your gainz.</h1>
-        <p>Some compelling BS about how my app makes the world a better place will go here.</p>
+        <p>Some compelling marketing pitch about how my app makes the world a better place will go here.</p>
         <ButtonToolbar>
           <LinkContainer to="/signup">
             <Button bsStyle="primary">Sign Up</Button>
