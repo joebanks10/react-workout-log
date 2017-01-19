@@ -1,7 +1,7 @@
 {
-  "name": "workout-log",
+  "name": "meet-up",
   "version": "1.0.0",
-  "description": "A simple workout log",
+  "description": "A meet-up app",
   "main": "./src/index.js",
   "scripts": {
     "start": "webpack-dev-server",
