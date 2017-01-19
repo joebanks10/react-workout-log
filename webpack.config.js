@@ -1,11 +1,11 @@
 module.exports = {
   entry: './src/index.js',
   output: {
-    path: './public/',
+    path: './docs/',
     filename: 'index.js'
   },
   devServer: {
-    contentBase: './public',
+    contentBase: './docs',
     inline: true,
     port: 3333
   },
@@ -34,32 +34,26 @@ module.exports = {
       },
       { 
         test: /\.png$/, 
-        exclude: /node_modules/,
         loader: "url-loader?limit=100000" 
       },
       { 
         test: /\.jpg$/, 
-        exclude: /node_modules/,
         loader: "file-loader" 
       },
       {
         test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/, 
-        exclude: /node_modules/,
         loader: 'url?limit=10000&mimetype=application/font-woff'
       },
       {
         test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, 
-        exclude: /node_modules/,
         loader: 'url?limit=10000&mimetype=application/octet-stream'
       },
       {
         test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, 
-        exclude: /node_modules/,
         loader: 'file'
       },
       {
         test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, 
-        exclude: /node_modules/,
         loader: 'url?limit=10000&mimetype=image/svg+xml'
       }
     ]
