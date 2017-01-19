@@ -25,6 +25,7 @@ module.exports = {
       },
       { 
         test: /\.css$/, 
+        exclude: /node_modules/,
         loaders: [
           'style-loader',
           'css-loader?modules&importLoaders=1&&localIdentName=[name]__[local]___[hash:base64:5]',
@@ -33,26 +34,32 @@ module.exports = {
       },
       { 
         test: /\.png$/, 
+        exclude: /node_modules/,
         loader: "url-loader?limit=100000" 
       },
       { 
         test: /\.jpg$/, 
+        exclude: /node_modules/,
         loader: "file-loader" 
       },
       {
         test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/, 
+        exclude: /node_modules/,
         loader: 'url?limit=10000&mimetype=application/font-woff'
       },
       {
         test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, 
+        exclude: /node_modules/,
         loader: 'url?limit=10000&mimetype=application/octet-stream'
       },
       {
         test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, 
+        exclude: /node_modules/,
         loader: 'file'
       },
       {
         test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, 
+        exclude: /node_modules/,
         loader: 'url?limit=10000&mimetype=image/svg+xml'
       }
     ]
@@ -63,4 +70,4 @@ module.exports = {
       require('autoprefixer')
     ];
   }
-}
+};

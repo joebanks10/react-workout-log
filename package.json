@@ -1,11 +1,11 @@
 {
-  "name": "meet-up",
+  "name": "workout-log",
   "version": "1.0.0",
-  "description": "A meet-up app",
+  "description": "A simple workout log",
   "main": "./src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack-dev-server"
+    "start": "webpack-dev-server",
+    "build": "webpack"
   },
   "author": "Joe Banks",
   "license": "ISC",
