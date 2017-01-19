@@ -27029,7 +27029,7 @@
 	  function Storage() {
 	    _classCallCheck(this, Storage);
 
-	    // set up Firebase
+	    // set up firebase
 	    var config = {
 	      apiKey: "AIzaSyC02BDarkzp-jMztlBI32cQOlEZvVluv7M",
 	      authDomain: "workout-log-a0c07.firebaseapp.com",
@@ -27040,14 +27040,20 @@
 
 	    this.app = _firebase2.default.initializeApp(config);
 	    this.db = _firebase2.default.database();
-	    this.workouts = this.db.ref('workouts/');
 	  }
 
 	  _createClass(Storage, [{
 	    key: 'getWorkouts',
 	    value: function getWorkouts(id) {
+	      var user = _firebase2.default.auth().currentUser;
+	      var uid = user && user.uid;
+
+	      if (!uid) {
+	        return null;
+	      }
+
 	      if (typeof id === "undefined") {
-	        return this.workouts;
+	        return this.db.ref('workouts/').orderByChild('uid').equalTo(user.uid);
 	      }
 
 	      return this.db.ref('workouts/' + id);
@@ -27061,12 +27067,19 @@
 	          exercises = _ref$exercises === undefined ? [] : _ref$exercises;
 
 	      var id = _shortid2.default.generate();
+	      var user = _firebase2.default.auth().currentUser;
+	      var uid = user && user.uid;
+
+	      if (!uid) {
+	        return;
+	      }
 
 	      // convert to unix timestamp
 	      date = (0, _moment2.default)(date).unix() || (0, _moment2.default)().unix();
 
 	      this.db.ref('workouts/').push().set({
 	        id: id,
+	        uid: uid,
 	        date: date,
 	        exercises: exercises
 	      });
@@ -62271,6 +62284,7 @@
 
 	      var workoutsRef = this.db.getWorkouts();
 	      var initWorkouts = [];
+	      var user = _firebase2.default.auth().currentUser;
 
 	      workoutsRef.once('value', function (list) {
 	        list.forEach(function (data) {
@@ -62456,7 +62470,6 @@
 	    key: 'render',
 	    value: function render() {
 	      var activeWorkout = this.getActiveWorkout();
-	      var user = _firebase2.default.auth().currentUser;
 
 	      return _react2.default.createElement(_Workouts2.default, {
 	        workouts: this.state.workouts,
